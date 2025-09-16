@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/Kim_logo.dart';
-import '../widgets/slider.dart'; // <-- Added this import
+import '../widgets/slider.dart'; 
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

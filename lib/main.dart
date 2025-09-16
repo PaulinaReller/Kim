@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart'; // Make sure to import the welcome screen
+
+// 1. This import is correct (it points to your file)
 import 'screens/chat_screen.dart';
 
 void main() {
@@ -20,13 +22,14 @@ class GeminiApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      // This tells the app to start at the '/' route
       initialRoute: '/',
-      // This is the directory of all screens
       routes: {
-        // This line was missing:
-        '/': (context) => const WelcomeScreen(), // The actual home screen widget
-        '/chat': (context) => const ChatScreen(),
+        '/': (context) => const WelcomeScreen(),
+        
+        // 2. THIS IS THE FIX:
+        // Call the OnboardingScreen class, which lives
+        // inside your chat_screen.dart file.
+        '/chat': (context) => const OnboardingScreen(),
       },
     );
   }

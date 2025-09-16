@@ -15,7 +15,6 @@ class BeginnerFooter extends StatelessWidget {
   final VoidCallback onBack;
   final VoidCallback onForward;
 
-  // This is the green color from your design
   static const Color _darkGreen = Color(0xFF03513A);
 
   @override
@@ -23,7 +22,6 @@ class BeginnerFooter extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // 1. Left Arrow Button (Outlined)
         Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -35,7 +33,6 @@ class BeginnerFooter extends StatelessWidget {
           ),
         ),
 
-        // 2. Page Indicator Dots
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(pageCount, (index) {
@@ -43,7 +40,6 @@ class BeginnerFooter extends StatelessWidget {
           }),
         ),
 
-        // 3. Right Arrow Button (Solid)
         Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
@@ -58,7 +54,6 @@ class BeginnerFooter extends StatelessWidget {
     );
   }
 
-  /// Helper widget to build a single dot
   Widget _buildDot({required bool isActive}) {
     return Container(
       width: 10,

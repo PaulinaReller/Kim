@@ -58,11 +58,9 @@ class ChatWindow extends StatelessWidget {
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    // This padding now matches the button's padding
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: RichText(
                       text: TextSpan(
-                        // Default style for the body
                         style: const TextStyle(
                           color: Color(0xFF1E1E1E),
                           fontSize: 16,
