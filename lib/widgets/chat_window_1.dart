@@ -34,19 +34,16 @@ class ChatWindow extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                    // --- MODIFICATION HERE ---
-                    alignment: Alignment.centerLeft, // This aligns the icon
-                    // --- END MODIFICATION ---
+                    alignment: Alignment.centerLeft, 
 
-                    // We leave the default padding, which is 8.0
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: const Icon(Icons.close, color: Colors.black),
                     onPressed: onClose, // Use the callback
                   ),
                    const Text('Textansicht',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 14)),
+                          color: Colors.black,
+                          fontSize: 12)),
                 ],
               ),
               const SizedBox(height: 16),

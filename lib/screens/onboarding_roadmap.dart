@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'question_screen.dart'; 
 
 class OnboardingRoadmapScreen extends StatelessWidget {
   const OnboardingRoadmapScreen({super.key});
@@ -101,8 +102,12 @@ class OnboardingRoadmapScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        print('Start gedrückt');
-                      },
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) => const QuestionnaireFlow(),
+    ),
+  );
+},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kimGreen,
                         shape: const StadiumBorder(),

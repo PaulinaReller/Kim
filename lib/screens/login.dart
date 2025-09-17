@@ -1,3 +1,5 @@
+//Screen 6 Log in 
+
 import 'package:flutter/material.dart';
 import '../widgets/Kim_logo.dart'; // Logo Import KIM 
 import 'registration.dart';
