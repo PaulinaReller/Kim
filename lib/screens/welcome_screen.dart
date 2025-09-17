@@ -1,3 +1,5 @@
+// Screen 1 Welcome 
+
 import 'package:flutter/material.dart';
 import '../widgets/Kim_logo.dart';
 import '../widgets/slider.dart'; 

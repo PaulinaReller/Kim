@@ -1,4 +1,9 @@
+// This file contains the QuestionnaireProvider,
+// for the entire questionnaire flow. It holds the master list of all questions
+//, tracks the user's progress, stores their answers, and
+// notifies the UI when it needs to update to a new question.
 // lib/models/question_model.dart
+
 
 enum QuestionType {
   singleChoice,
