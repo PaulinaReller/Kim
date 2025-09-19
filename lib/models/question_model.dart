@@ -1,9 +1,4 @@
-// This file contains the QuestionnaireProvider,
-// for the entire questionnaire flow. It holds the master list of all questions
-//, tracks the user's progress, stores their answers, and
-// notifies the UI when it needs to update to a new question.
 // lib/models/question_model.dart
-
 
 enum QuestionType {
   singleChoice,
@@ -11,26 +6,30 @@ enum QuestionType {
   slider,
   singleChoiceWithImages,
   singleChoicePlusInput,
-  bodyMap,
+  textAndSingleChoice,
+  inputThenSingleChoice, // This was added based on its usage in your other files
 }
 
 class Question {
   final String id;
-  final String header; // Dein "kleiner Header unter dem Text"
+  final String header;
   final String questionText;
   final QuestionType type;
 
-  // Für Auswahlfragen
+  // For choice-based questions
   final List<String> options;
 
-  // ++ NEU: Für Auswahlfragen mit Bildern ++
-  // Map<Optionstext, Bild-Asset-Pfad>
+  // For choice-based questions with images
   final Map<String, String>? imageOptions;
 
-  // Für Slider
+  // For sliders
   final double? sliderMin;
   final double? sliderMax;
   final int? sliderDivisions;
+  
+  // For branching logic
+  final String? nextQuestionId;
+  final Map<String, String>? branchingRules;
 
   const Question({
     required this.id,
@@ -42,5 +41,7 @@ class Question {
     this.sliderMin,
     this.sliderMax,
     this.sliderDivisions,
+    this.branchingRules,
+    this.nextQuestionId,
   });
 }

@@ -1,4 +1,4 @@
-// For the Questionaire Screen 11 until .... end of questionaire 
+// lib/screens/question_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +8,7 @@ import '../providers/questionnaire_provider.dart';
 import '../widgets/kim_logo.dart';
 import '../widgets/frosted_glass_container.dart';
 
+// This widget now creates its own provider for the questionnaire.
 class QuestionnaireFlow extends StatelessWidget {
   const QuestionnaireFlow({super.key});
 
@@ -34,10 +35,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    // This listener correctly handles the page-to-page animation
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<QuestionnaireProvider>().addListener(() {
         final provider = context.read<QuestionnaireProvider>();
-        if (_pageController.page?.round() != provider.currentQuestionIndex) {
+        if (_pageController.hasClients && _pageController.page?.round() != provider.currentQuestionIndex) {
           _pageController.animateToPage(
             provider.currentQuestionIndex,
             duration: const Duration(milliseconds: 400),
@@ -57,6 +59,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<QuestionnaireProvider>();
+
+    // REMOVED: The logic for checking `MapsToRoute` has been deleted from here.
 
     return Scaffold(
       body: Stack(
@@ -119,6 +123,131 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
     final kimGreen = const Color(0xFF03513A);
 
     switch (widget.question.type) {
+      case QuestionType.inputThenSingleChoice:
+        final inputOptionHint = widget.question.options.first;
+        final radioOptions = widget.question.options.sublist(1);
+
+        return Column(
+          children: [
+            FrostedGlassContainer(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _textInputController,
+                onTap: () {
+                  setState(() {
+                    _selectedSingleChoice = inputOptionHint;
+                  });
+                },
+                onChanged: (text) {
+                  setState(() {
+                    if (_selectedSingleChoice != inputOptionHint) {
+                      _selectedSingleChoice = inputOptionHint;
+                    }
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: inputOptionHint,
+                  border: InputBorder.none,
+                  hintStyle: const TextStyle(color: Colors.black54),
+                ),
+                style: const TextStyle(color: Colors.black87),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ...radioOptions.map((option) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedSingleChoice = option;
+                      _textInputController.clear();
+                      FocusScope.of(context).unfocus();
+                    });
+                  },
+                  child: FrostedGlassContainer(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text(option,
+                                style: const TextStyle(color: Colors.black87))),
+                        Radio<String>(
+                          value: option,
+                          groupValue: _selectedSingleChoice,
+                          activeColor: kimGreen,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSingleChoice = value;
+                              _textInputController.clear();
+                              FocusScope.of(context).unfocus();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        );
+      case QuestionType.textAndSingleChoice:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Alter",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black87)),
+            const SizedBox(height: 8),
+            FrostedGlassContainer(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _textInputController,
+                keyboardType: TextInputType.datetime,
+                onChanged: (text) => setState(() {}),
+                decoration: const InputDecoration(
+                  hintText: 'XX.XX.XXXX',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.black54),
+                ),
+                style: const TextStyle(color: Colors.black87),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text("Geschlecht",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black87)),
+            ...widget.question.options.map((option) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: GestureDetector(
+                  onTap: () => setState(() => _selectedSingleChoice = option),
+                  child: FrostedGlassContainer(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text(option,
+                                style: const TextStyle(color: Colors.black87))),
+                        Radio<String>(
+                          value: option,
+                          groupValue: _selectedSingleChoice,
+                          activeColor: kimGreen,
+                          onChanged: (value) =>
+                              setState(() => _selectedSingleChoice = value),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        );
+
       case QuestionType.singleChoice:
         return Column(
           children: widget.question.options.map((option) {
@@ -263,7 +392,7 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
           }).toList(),
         );
 
-     case QuestionType.singleChoicePlusInput:
+      case QuestionType.singleChoicePlusInput:
         final otherOption = widget.question.options.last;
         return Column(
           children: [
@@ -273,8 +402,8 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
                 child: GestureDetector(
                   onTap: () => setState(() => _selectedSingleChoice = option),
                   child: FrostedGlassContainer(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
                     child: Row(
                       children: [
                         Radio<String>(
@@ -301,12 +430,9 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextField(
                     controller: _textInputController,
-                    // ++ ADD THIS PART ++
                     onChanged: (text) {
-                      // This tells the UI to rebuild and re-check _isAnswered()
                       setState(() {});
                     },
-                    // ++ END OF CHANGE ++
                     decoration: const InputDecoration(
                       hintText: 'Bitte angeben...',
                       border: InputBorder.none,
@@ -318,15 +444,6 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
               ),
           ],
         );
-      case QuestionType.bodyMap:
-        return Center(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            color: Colors.grey.shade200,
-            child: const Text(
-                'Hier würde die interaktive Body Map erscheinen. Dies erfordert ein benutzerdefiniertes Widget.'),
-          ),
-        );
 
       default:
         return FrostedGlassContainer(
@@ -337,6 +454,17 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
 
   bool _isAnswered() {
     switch (widget.question.type) {
+      case QuestionType.inputThenSingleChoice:
+        if (_selectedSingleChoice == null) return false;
+        if (_selectedSingleChoice == widget.question.options.first) {
+          return _textInputController.text.isNotEmpty;
+        }
+        return true; 
+
+      case QuestionType.textAndSingleChoice:
+        return _textInputController.text.isNotEmpty &&
+            _selectedSingleChoice != null;
+
       case QuestionType.singleChoice:
       case QuestionType.singleChoiceWithImages:
         return _selectedSingleChoice != null;
@@ -350,8 +478,6 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
         return _selectedMultiChoice.isNotEmpty;
       case QuestionType.slider:
         return _sliderValue != null;
-      case QuestionType.bodyMap:
-        return false;
       default:
         return false;
     }
@@ -361,6 +487,21 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
     final provider = context.read<QuestionnaireProvider>();
     dynamic answer;
     switch (widget.question.type) {
+      case QuestionType.inputThenSingleChoice:
+        if (_selectedSingleChoice == widget.question.options.first) {
+          answer = _textInputController.text;
+        } else {
+          answer = _selectedSingleChoice;
+        }
+        break;
+
+      case QuestionType.textAndSingleChoice:
+        answer = {
+          'age': _textInputController.text,
+          'gender': _selectedSingleChoice,
+        };
+        break;
+
       case QuestionType.singleChoice:
       case QuestionType.singleChoiceWithImages:
         answer = _selectedSingleChoice;
@@ -377,9 +518,6 @@ class _SingleQuestionUIState extends State<_SingleQuestionUI> {
         break;
       case QuestionType.slider:
         answer = _sliderValue;
-        break;
-      case QuestionType.bodyMap:
-        answer = "Noch nicht implementiert";
         break;
     }
     provider.answerQuestion(widget.question.id, answer);
